@@ -3,7 +3,9 @@ import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Button from '@mui/material/Button';
 import { FormControl, Input, TextField, Typography } from '@mui/material';
-import { useAddUsersMutation } from '@/_libs/redux/apiSlice';
+import { useAddUsersMutation, useUpdateUsersMutation } from '@/_libs/redux/apiSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { _dataEdit, onFinishAlert, setDataEdit } from '@/_libs/redux/dataUsers';
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -21,6 +23,7 @@ interface InterfaceModalUser{
     handleClose: any;
     title:string;
     children?:React.ReactNode
+    data:any
 }
 interface FormData {
     username: string;
@@ -28,10 +31,12 @@ interface FormData {
     email:string;
     website:string;
     phone:string;
+    id:string;
 
   }
   
   const initialFormData: FormData = {
+    id:'',
     name:'',
     username: '',
     email: '',
@@ -39,22 +44,44 @@ interface FormData {
     phone:'',
   };
 
-export default function CreateUser({open, handleClose, title,children}:InterfaceModalUser) {
+export default function EditUser({open, data, handleClose, title,children}:InterfaceModalUser) {
     const [formData, setFormData] = React.useState<FormData>(initialFormData);
-    const  [addUsers] = useAddUsersMutation();
+    const  [updateUsers] = useUpdateUsersMutation();
+    const  dispatch = useDispatch();
 
+    React.useEffect(() => {
+      if(data) {
+        setFormData({...formData, 
+          id:data.id,
+          name: data.name,
+          username: data.username,
+          email: data.email,
+          website:data.website,
+          phone:data.phone,
+         })
+      }
+    
+
+    }, [data])
+    
     const handleSubmit = async (e:any) => {
         e.preventDefault();
         try{
-            await addUsers(formData)
-            // setFormData(initialFormData)
+            const respons = await updateUsers(formData)
+            if(respons){ 
+              setFormData(initialFormData)
+              dispatch(setDataEdit({modal:false, data:null}))
+              dispatch(onFinishAlert({modal:true, msg:"Success Edit User"}))
+            }
         }
         catch(res){
             console.log(res, "coba");
-            
         }
        
-   
+    }
+    const handleCloseEvent = () => {
+      handleClose()
+      setFormData(initialFormData)
     }
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -65,12 +92,13 @@ export default function CreateUser({open, handleClose, title,children}:Interface
     }));
   };
 
+
   return (
     <div>
       
       <Modal
         open={open}
-        onClose={handleClose}
+        onClose={handleCloseEvent}
         aria-labelledby="parent-modal-title"
         aria-describedby="parent-modal-description"
       >
@@ -86,6 +114,7 @@ export default function CreateUser({open, handleClose, title,children}:Interface
               size='small'
               label="Name"
               name="name"
+           
               value={formData.name}
               onChange={handleChange}
             />
@@ -98,6 +127,7 @@ export default function CreateUser({open, handleClose, title,children}:Interface
               size='small'
               label="Username"
               name="username"
+       
               value={formData.username}
               onChange={handleChange}
             />
@@ -111,6 +141,7 @@ export default function CreateUser({open, handleClose, title,children}:Interface
               label="Email"
               type='email'
               name="email"
+           
               value={formData.email}
               onChange={handleChange}
             />
@@ -123,6 +154,7 @@ export default function CreateUser({open, handleClose, title,children}:Interface
               size='small'
               label="Website"
               name="website"
+             
               value={formData.website}
               onChange={handleChange}
             />
@@ -135,6 +167,7 @@ export default function CreateUser({open, handleClose, title,children}:Interface
               size='small'
               label="Phone"
               name="phone"
+              
               value={formData.phone}
               onChange={handleChange}
             />

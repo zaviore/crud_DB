@@ -1,8 +1,10 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react'
+import { RootState } from '../store';
 
 
 export const usersApi = createApi({
   reducerPath: 'usersApi',
+  tagTypes:["User"],
   baseQuery: fetchBaseQuery({ baseUrl: 'https://jsonplaceholder.typicode.com' }),
   endpoints: (builder) => ({
     getAllUsers: builder.query({
@@ -15,6 +17,7 @@ export const usersApi = createApi({
         method:"POST",
         body:val
       }), 
+      invalidatesTags:["User"]
       
     }),
     updateUsers: builder.mutation({
@@ -22,7 +25,9 @@ export const usersApi = createApi({
         url:`/users/${val.id}`,
         method:"PATCH",
         body:val
-      }), 
+      }),
+      
+      invalidatesTags:["User"]
       
     }),
     deleteUsers: builder.mutation({
@@ -31,6 +36,7 @@ export const usersApi = createApi({
         method:"DELETE",
         body:id
       }), 
+      invalidatesTags:["User"]
       
     }),
 
@@ -39,4 +45,5 @@ export const usersApi = createApi({
 
 })
 
+export const dataUsers = (state:RootState) => state.usersApi.queries
 export const {useAddUsersMutation, useDeleteUsersMutation, useUpdateUsersMutation, useGetAllUsersQuery } = usersApi;

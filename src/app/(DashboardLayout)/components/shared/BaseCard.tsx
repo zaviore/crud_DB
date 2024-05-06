@@ -11,7 +11,7 @@ type Props = {
   headsubtitle?: string | JSX.Element;
   children?: JSX.Element;
   middlecontent?: string | JSX.Element;
-  button?: any;
+
 };
 
 const DashboardCard = ({
@@ -24,7 +24,7 @@ const DashboardCard = ({
   headtitle,
   headsubtitle,
   middlecontent,
-  button
+ 
 }: Props) => {
   return (
     <Card sx={{ padding: 0 }} elevation={9} variant={undefined}>
@@ -36,9 +36,6 @@ const DashboardCard = ({
               <Typography variant="subtitle2" color="textSecondary">
               {headsubtitle}
               </Typography>
-            </div>
-            <div>
-              {button}
             </div>
           
           </div>

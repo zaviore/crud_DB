@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Typography,
   Box,
@@ -15,24 +15,29 @@ import {
 import BaseCard from "../shared/DashboardCard";
 import { blue, red } from "@mui/material/colors";
 import { IconEdit, IconTrash, IconTrashFilled } from "@tabler/icons-react";
-
+import { useAddUsersMutation, useDeleteUsersMutation, useUpdateUsersMutation } from "@/_libs/redux/apiSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { openModal } from '@/_libs/redux/stateSlice'
+import { _dataEdit, onOpenDeleteModal, setDataEdit } from "@/_libs/redux/dataUsers";
 interface DataInterface {
   data: [];
   loading: boolean;
   error?: any;
 }
-const initStateMember:any = {
-  modal:false,
- 
-}
 
 const ProductPerfomance = ({ data, loading, error }: DataInterface) => {
-  const [addMember, setAddMember] = useState(initStateMember)
+  const dispatch = useDispatch()
+  useEffect(() => {
+    if(data) {
+      
+    }
+  }, [data])
+  
   return (
     <BaseCard
       title="Product Perfomance"
       action={
-        <Button variant="contained" color="primary">
+        <Button variant="contained" color="primary" onClick={() => dispatch(openModal())}>
           Add Data
         </Button>
       }
@@ -90,12 +95,21 @@ const ProductPerfomance = ({ data, loading, error }: DataInterface) => {
 
 export default ProductPerfomance;
 
-const ValidateData = (data: Array<[]>, loading: boolean, error: any) => {
+const ValidateData = (data: Array<[]>, loading: boolean, error: any,  ) => {
+  const dispatch = useDispatch()
+  const handleEditData =(value:any)=> {
+    dispatch(setDataEdit({modal:true, data:value}))
+  }
+
+  const handleDeleteDialog = (value:any) => {
+    dispatch(onOpenDeleteModal({modal: true, data: value}))
+  }
+
   if (loading) {
     return (
       <TableRow>
-        <TableCell rowSpan={12}>
-          <Typography fontSize="15px" fontWeight={500}>
+        <TableCell colSpan={12}>
+          <Typography fontSize="15px" textAlign={"center"} fontWeight={500}>
             Loading ...
           </Typography>
         </TableCell>
@@ -152,7 +166,7 @@ const ValidateData = (data: Array<[]>, loading: boolean, error: any) => {
           </TableCell>
           <TableCell align="center">
             <Box alignItems="center" display="flex" gap="2px" justifyContent="right">
-              <IconButton><IconEdit /></IconButton> <IconButton ><IconTrash/></IconButton>
+              <IconButton onClick={() => handleEditData(product)}><IconEdit /></IconButton> <IconButton onClick={() => handleDeleteDialog(product)}><IconTrash/></IconButton>
             </Box>
            
           </TableCell>
