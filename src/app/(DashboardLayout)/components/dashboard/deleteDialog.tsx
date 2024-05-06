@@ -4,34 +4,12 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
-import { useDeleteUsersMutation } from '@/_libs/redux/apiSlice';
-import { useDispatch, useSelector } from 'react-redux';
-import { _data, _dataDelete, onFinishAlert, onOpenDeleteModal, setData } from '@/_libs/redux/dataUsers';
+import { _data, _dataDelete } from '@/_libs/redux/dataUsers';
+import useDashboardService from './service/useDashboardAPI';
 
 export default function DeleteDialog({open, handleClose, data}:any) {
-    const  [deleteUsers] = useDeleteUsersMutation();
-    const dispatch = useDispatch()
-    const dataUser = useSelector(_data)
-    
-    const handleDelete = async (e:any) => {
-        e.preventDefault();
-        try{
-           const respos = await deleteUsers({id:data.data.id})
-           if(respos) {
-            dispatch(onOpenDeleteModal({modal:false, data:null}))
-            dispatch(onFinishAlert({modal:true, msg:"Success Delete"}))
-            const dataDeleteUpdate = await dataUser?.filter((val:any) => val.id !== data.data.id)
-            dispatch(setData(dataDeleteUpdate))
-           }
-            
-        }
-        catch(err){
-            console.log(err, "coba");
-            
-        }
-       
-    }
+   
+const { handleDeleteUser } = useDashboardService()
 
   return (
     <React.Fragment>
@@ -50,7 +28,7 @@ export default function DeleteDialog({open, handleClose, data}:any) {
         </DialogContent>
         <DialogActions>
           <Button variant='outlined' onClick={handleClose}>No</Button>
-          <Button variant='contained' onClick={handleDelete} autoFocus>
+          <Button variant='contained' onClick={handleDeleteUser} autoFocus>
             yes
           </Button>
         </DialogActions>

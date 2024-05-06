@@ -15,6 +15,7 @@ import {
   setData,
   setDataEdit,
 } from "@/_libs/redux/dataUsers";
+import useDashboardService from './service/useDashboardAPI';
 
 const style = {
   position: "absolute" as "absolute",
@@ -43,7 +44,7 @@ interface FormData {
   id: string;
 }
 
-const initialFormData: FormData = {
+const initialFormData: any = {
   id: "",
   name: "",
   username: "",
@@ -57,12 +58,11 @@ export default function EditUser({
   data,
   handleClose,
   title,
-  children,
+  
 }: InterfaceModalUser) {
-  const [formData, setFormData] = React.useState<FormData>(initialFormData);
-  const [updateUsers] = useUpdateUsersMutation();
-  const dispatch = useDispatch();
-  const dataUser = useSelector(_data);
+ 
+  const {setFormData, formData, handleUpdateUser,handleChangeText } = useDashboardService(initialFormData)
+
   React.useEffect(() => {
     if (data) {
       setFormData({
@@ -77,47 +77,19 @@ export default function EditUser({
     }
   }, [data]);
 
-  const handleSubmit = async (e: any) => {
-    e.preventDefault();
-    try {
-      const respons: any = await updateUsers(formData);
-
-     if (respons) {
-      const updatedArray = await dataUser.map((obj: any) => {
-        if (obj.id === formData.id) {
-         return respons.data
-        }
-        return obj;
-      });
-
-  
-        dispatch(setData(updatedArray));
-        dispatch(setDataEdit({ modal: false, data: null }));
-        dispatch(onFinishAlert({ modal: true, msg: "Success Edit User" }));
-        setFormData(initialFormData);
-      }
-    } catch (res) {
-      console.log(res, "coba");
-    }
-  };
-  const handleCloseEvent = () => {
+ 
+  const handleCloseModal = () => {
     handleClose();
-    setFormData(initialFormData);
+    setFormData(initialFormData)
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  };
+
 
   return (
     <div>
       <Modal
         open={open}
-        onClose={handleCloseEvent}
+        onClose={handleCloseModal}
         aria-labelledby="parent-modal-title"
         aria-describedby="parent-modal-description"
       >
@@ -125,7 +97,7 @@ export default function EditUser({
           <Typography variant="h2" id="parent-modal-title">
             {title}
           </Typography>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleUpdateUser}>
             <TextField
               variant="outlined"
               margin="normal"
@@ -135,7 +107,7 @@ export default function EditUser({
               label="Name"
               name="name"
               value={formData.name}
-              onChange={handleChange}
+              onChange={handleChangeText}
             />
             <TextField
               variant="outlined"
@@ -146,7 +118,7 @@ export default function EditUser({
               label="Username"
               name="username"
               value={formData.username}
-              onChange={handleChange}
+              onChange={handleChangeText}
             />
             <TextField
               variant="outlined"
@@ -158,7 +130,7 @@ export default function EditUser({
               type="email"
               name="email"
               value={formData.email}
-              onChange={handleChange}
+              onChange={handleChangeText}
             />
             <TextField
               variant="outlined"
@@ -169,7 +141,7 @@ export default function EditUser({
               label="Website"
               name="website"
               value={formData.website}
-              onChange={handleChange}
+              onChange={handleChangeText}
             />
             <TextField
               variant="outlined"
@@ -180,7 +152,7 @@ export default function EditUser({
               label="Phone"
               name="phone"
               value={formData.phone}
-              onChange={handleChange}
+              onChange={handleChangeText}
             />
             <Button type="submit" variant="contained" color="primary" fullWidth>
               Submit

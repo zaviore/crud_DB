@@ -160,11 +160,11 @@ const ValidateData = (data: Array<[]>, loading: boolean, error: any,  ) => {
               sx={{
                 pl: "4px",
                 pr: "4px",
-                backgroundColor: red,
-                color: "#fff",
+                color: "black",
+
               }}
               size="small"
-              label={"Lokal"}
+              label={product.username}
             ></Chip>
           </TableCell>
           <TableCell align="center">

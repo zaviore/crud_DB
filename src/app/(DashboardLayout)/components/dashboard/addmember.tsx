@@ -2,11 +2,10 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Button from '@mui/material/Button';
-import { FormControl, Input, TextField, Typography } from '@mui/material';
-import { useAddUsersMutation } from '@/_libs/redux/apiSlice';
-import { useDispatch, useSelector } from 'react-redux';
-import { _data, setData } from '@/_libs/redux/dataUsers';
-import { openModal } from '@/_libs/redux/stateSlice';
+import {TextField, Typography } from '@mui/material';
+import { _data } from '@/_libs/redux/dataUsers';
+
+import useDashboardService from './service/useDashboardAPI';
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -45,41 +44,9 @@ interface FormData {
   };
 
 export default function CreateUser({open, handleClose, title}:InterfaceModalUser) {
-    const [formData, setFormData] = React.useState<FormData>(initialFormData);
-    const  [addUsers] = useAddUsersMutation();
-    const dispatch = useDispatch()
-    const dataUser = useSelector(_data)
 
-    const handleSubmit = async (e:any) => {
-        e.preventDefault();
-        try{
-          const respons :any = await addUsers(formData);
-                  
-          const newData = respons?.data
-          const listUser = [...dataUser, newData] 
+    const {formData, handleSubmitForm, handleChangeText} = useDashboardService(initialFormData)
     
-          if(respons){
-            dispatch(setData(listUser))
-            dispatch(openModal())
-          }
-           
-        }
-        catch(err){
-            console.log(err, "coba");
-            
-        }
-       
-   
-    }
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData(prevState => ({
-      ...prevState,
-      [name]: value,
-    }));
-  };
-
   return (
     <div>
       
@@ -91,7 +58,7 @@ export default function CreateUser({open, handleClose, title}:InterfaceModalUser
       >
         <Box sx={{ ...style, width: 400, borderRadius:5 }}>
           <Typography variant='h2' id="parent-modal-title">{title}</Typography>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmitForm}>
             <TextField
               variant="outlined"
               margin="normal"
@@ -102,7 +69,7 @@ export default function CreateUser({open, handleClose, title}:InterfaceModalUser
               label="Name"
               name="name"
               value={formData.name}
-              onChange={handleChange}
+              onChange={handleChangeText}
             />
             <TextField
               variant="outlined"
@@ -114,7 +81,7 @@ export default function CreateUser({open, handleClose, title}:InterfaceModalUser
               label="Username"
               name="username"
               value={formData.username}
-              onChange={handleChange}
+              onChange={handleChangeText}
             />
              <TextField
               variant="outlined"
@@ -127,7 +94,7 @@ export default function CreateUser({open, handleClose, title}:InterfaceModalUser
               type='email'
               name="email"
               value={formData.email}
-              onChange={handleChange}
+              onChange={handleChangeText}
             />
              <TextField
               variant="outlined"
@@ -139,7 +106,7 @@ export default function CreateUser({open, handleClose, title}:InterfaceModalUser
               label="Website"
               name="website"
               value={formData.website}
-              onChange={handleChange}
+              onChange={handleChangeText}
             />
              <TextField
               variant="outlined"
@@ -151,7 +118,7 @@ export default function CreateUser({open, handleClose, title}:InterfaceModalUser
               label="Phone"
               name="phone"
               value={formData.phone}
-              onChange={handleChange}
+              onChange={handleChangeText}
             />
             <Button type="submit" variant="contained" color="primary" fullWidth>
               Submit
