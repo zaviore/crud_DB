@@ -63,9 +63,9 @@ export const dataEditState = createSlice({
 
 
 // export const allert = (state:RootState) => state.allertState
-export const { setDataEdit, onCloseDataEdit, onFinishAlert, onOpenDeleteModal } = dataEditState.actions
+export const { setDataEdit, onCloseDataEdit, onFinishAlert, onOpenDeleteModal, setData } = dataEditState.actions
 export const _data = (state:RootState) => state.dataEdit.data
 export const _dataEdit = (state:RootState) => state.dataEdit.edit
-export const _dataDelete = (state:RootState) => state.dataEdit
+export const _dataDelete = (state:RootState) => state.dataEdit.delete
 export const _alert = (state:RootState) => state.dataEdit.alert
 export default dataEditState.reducer

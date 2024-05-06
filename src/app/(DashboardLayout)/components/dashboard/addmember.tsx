@@ -4,6 +4,9 @@ import Modal from '@mui/material/Modal';
 import Button from '@mui/material/Button';
 import { FormControl, Input, TextField, Typography } from '@mui/material';
 import { useAddUsersMutation } from '@/_libs/redux/apiSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { _data, setData } from '@/_libs/redux/dataUsers';
+import { openModal } from '@/_libs/redux/stateSlice';
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -23,6 +26,7 @@ interface InterfaceModalUser{
     children?:React.ReactNode
 }
 interface FormData {
+    id:string;
     username: string;
     name:string;
     email:string;
@@ -32,6 +36,7 @@ interface FormData {
   }
   
   const initialFormData: FormData = {
+    id:'',
     name:'',
     username: '',
     email: '',
@@ -39,18 +44,28 @@ interface FormData {
     phone:'',
   };
 
-export default function CreateUser({open, handleClose, title,children}:InterfaceModalUser) {
+export default function CreateUser({open, handleClose, title}:InterfaceModalUser) {
     const [formData, setFormData] = React.useState<FormData>(initialFormData);
     const  [addUsers] = useAddUsersMutation();
+    const dispatch = useDispatch()
+    const dataUser = useSelector(_data)
 
     const handleSubmit = async (e:any) => {
         e.preventDefault();
         try{
-            await addUsers(formData)
-            // setFormData(initialFormData)
+          const respons :any = await addUsers(formData);
+                  
+          const newData = respons?.data
+          const listUser = [...dataUser, newData] 
+    
+          if(respons){
+            dispatch(setData(listUser))
+            dispatch(openModal())
+          }
+           
         }
-        catch(res){
-            console.log(res, "coba");
+        catch(err){
+            console.log(err, "coba");
             
         }
        

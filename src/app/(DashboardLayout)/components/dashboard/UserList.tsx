@@ -18,7 +18,7 @@ import { IconEdit, IconTrash, IconTrashFilled } from "@tabler/icons-react";
 import { useAddUsersMutation, useDeleteUsersMutation, useUpdateUsersMutation } from "@/_libs/redux/apiSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { openModal } from '@/_libs/redux/stateSlice'
-import { _dataEdit, onOpenDeleteModal, setDataEdit } from "@/_libs/redux/dataUsers";
+import { _data, _dataEdit, onOpenDeleteModal, setData, setDataEdit } from "@/_libs/redux/dataUsers";
 interface DataInterface {
   data: [];
   loading: boolean;
@@ -29,9 +29,12 @@ const ProductPerfomance = ({ data, loading, error }: DataInterface) => {
   const dispatch = useDispatch()
   useEffect(() => {
     if(data) {
-      
+      dispatch(setData(data))
     }
   }, [data])
+
+  const dataUser = useSelector(_data)
+  console.log(dataUser, "hehe");
   
   return (
     <BaseCard
@@ -86,7 +89,7 @@ const ProductPerfomance = ({ data, loading, error }: DataInterface) => {
               </TableCell>
             </TableRow>
           </TableHead>
-          <TableBody>{ValidateData(data, loading, error)}</TableBody>
+          <TableBody>{ValidateData(dataUser, loading, error)}</TableBody>
         </Table>
       </TableContainer>
     </BaseCard>
@@ -128,7 +131,7 @@ const ValidateData = (data: Array<[]>, loading: boolean, error: any,  ) => {
   }
   return (
     <>
-      {data.map((product: any) => (
+      {data?.map((product: any) => (
         <TableRow key={product.name}>
           <TableCell>
             <Typography fontSize="15px" fontWeight={500}>

@@ -7,11 +7,12 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { useDeleteUsersMutation } from '@/_libs/redux/apiSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import { _dataDelete, onFinishAlert, onOpenDeleteModal } from '@/_libs/redux/dataUsers';
+import { _data, _dataDelete, onFinishAlert, onOpenDeleteModal, setData } from '@/_libs/redux/dataUsers';
 
 export default function DeleteDialog({open, handleClose, data}:any) {
     const  [deleteUsers] = useDeleteUsersMutation();
     const dispatch = useDispatch()
+    const dataUser = useSelector(_data)
     
     const handleDelete = async (e:any) => {
         e.preventDefault();
@@ -20,6 +21,8 @@ export default function DeleteDialog({open, handleClose, data}:any) {
            if(respos) {
             dispatch(onOpenDeleteModal({modal:false, data:null}))
             dispatch(onFinishAlert({modal:true, msg:"Success Delete"}))
+            const dataDeleteUpdate = await dataUser?.filter((val:any) => val.id !== data.data.id)
+            dispatch(setData(dataDeleteUpdate))
            }
             
         }

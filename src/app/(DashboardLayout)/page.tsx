@@ -27,7 +27,7 @@ const Dashboard = () => {
   
   return (
     <PageContainer title="Dashboard" description="this is Dashboard">
-      <DeleteDialog open={dataDelete.delete?.modal} data={ dataDelete&& dataDelete.delete} handleClose={() => dispatch(onOpenDeleteModal({modal:false, data:null}))} />
+      <DeleteDialog open={dataDelete.modal} data={dataDelete} handleClose={() => dispatch(onOpenDeleteModal({modal:false, data:null}))} />
       <CreateUser title='Create Users' open={open} handleClose={() =>dispatch(closeModal())}/> 
       <EditUser title='Edit Users' data={dataEdit && dataEdit.data} open={dataEdit.modal} handleClose={() =>dispatch(setDataEdit({modal:false, data:null}))}/> 
       <Collapse in={dataAlert.modal}>
